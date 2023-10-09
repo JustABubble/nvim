@@ -19,17 +19,34 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
+  'tpope/vim-sleuth',
+  'tpope/vim-dispatch',
   'ThePrimeagen/harpoon',
+
+  'rust-lang/rust.vim',
+
+  {
+    'github/copilot.vim',
+    cond = vim.fn.executable('node') == 1,
+  },
+
+  {
+    'togglebyte/togglerust',
+    ft = 'rust',
+    config = function()
+      vim.keymap.set('n', '<C-b>', '<CMD>Compile<CR>')
+    end,
+  },
 
   { 'numToStr/Comment.nvim', opts = {} },
 
   {
     -- LSP Configuration & Plugins
-    'neovim/nvim-lspconfig', 
+    'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
       { 'williamboman/mason.nvim', config = true },
-        'williamboman/mason-lspconfig.nvim',
+      'williamboman/mason-lspconfig.nvim',
     },
   },
 
@@ -85,6 +102,11 @@ require('lazy').setup({
           hl.DiagnosticVirtualTextHint = { bg = c.none, fg = c.hint }
           hl.DiagnosticVirtualTextUnnecessary = { bg = c.none, fg = c.terminal_black }
 
+          hl.DiagnosticUnderlineError = { undercurl = false }
+          hl.DiagnosticUnderlineWarn = { undercurl = false }
+          hl.DiagnosticUnderlineInfo = { undercurl = false }
+          hl.DiagnosticUnderlineHint = { undercurl = false }
+
           hl.TreesitterContext = { bg = c.none }
         end
       })
@@ -94,12 +116,6 @@ require('lazy').setup({
 })
 
 -- [[ Options ]]
-
--- Spacing options
-vim.o.shiftwidth = 4
-vim.o.tabstop = 4
-vim.o.softtabstop = 4
-vim.o.expandtab = true
 
 -- Disable status bar
 vim.o.laststatus = 0
@@ -128,8 +144,8 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
--- Keep signcolumn on by default
-vim.wo.signcolumn = 'yes'
+-- Keep signcolumn off by default
+vim.wo.signcolumn = 'no'
 
 -- Set colorcolumn
 vim.wo.colorcolumn = '80'
@@ -166,6 +182,24 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz', { silent = true })
 
 -- File browsing
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+
+-- Diagnostic keymaps
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+-- Quickfix list
+vim.keymap.set('n', '<leader>co', '<CMD>copen<CR>', { desc = 'Open quickfix list' })
+vim.keymap.set('n', '<leader>cc', '<CMD>cclose<CR>', { desc = 'Close quickfix list' })
+vim.keymap.set('n', '[c', '<CMD>cp<CR>', { desc = 'Goto previous quickfix item' })
+vim.keymap.set('n', ']c', '<CMD>cn<CR>', { desc = 'Goto next quickfix item' })
+
+-- [[ Life is pain ]]
+vim.api.nvim_create_autocmd('FileType', {
+  command = [[setlocal formatoptions-=c formatoptions-=r formatoptions-=o]],
+  pattern = '*',
+})
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -231,7 +265,8 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim' },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc',
+      'vim' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
@@ -294,48 +329,45 @@ vim.defer_fn(function()
   }
 end, 0)
 
--- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
-
 -- [[ LSP + Mason ]]
 local on_attach = function(_, bufnr)
-	local nmap = function(keys, func, desc)
-		if desc then
-			desc = 'LSP: ' .. desc
-		end
+  local nmap = function(keys, func, desc)
+    if desc then
+      desc = 'LSP: ' .. desc
+    end
 
-		vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
-	end
+    vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+  end
 
-	nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-	nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+  nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+  nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
-	nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-	nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-	nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-	nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-	nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-	nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+  nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+  nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+  nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+  nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
+  nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+  nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
-	-- See `:help K` for why this keymap
-	nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-	nmap('<C-S-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  -- See `:help K` for why this keymap
+  nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
+  nmap('<C-S-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
-	-- Lesser used LSP functionality
-	nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-	nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-	nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
-	nmap('<leader>wl', function()
-		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-	end, '[W]orkspace [L]ist Folders')
+  -- Lesser used LSP functionality
+  nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+  nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
+  nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
+  nmap('<leader>wl', function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, '[W]orkspace [L]ist Folders')
 
-	-- Create a command `:Format` local to the LSP buffer
-	vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-		vim.lsp.buf.format()
-	end, { desc = 'Format current buffer with LSP' })
+  -- Create a command `:Format` local to the LSP buffer
+  vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+    vim.lsp.buf.format()
+  end, { desc = 'Format current buffer with LSP' })
+
+  -- Fix this somehow
+  vim.cmd [[hi @lsp.type.unresolvedReference cterm=NONE gui=NONE]]
 end
 
 local servers = {
@@ -363,11 +395,17 @@ mason_lspconfig.setup {
 mason_lspconfig.setup_handlers {
   function(server_name)
     require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
       on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
     }
   end,
 }
 
+vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    virtual_text = false,
+    signs = false,
+    update_in_insert = false,
+    underline = false,
+    severity_sort = false,
+  }
+)
