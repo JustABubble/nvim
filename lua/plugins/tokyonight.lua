@@ -9,6 +9,15 @@ local opts = function()
       sidebars = 'transparent',
       floats = 'transparent',
     },
+    on_highlights = function(hl, c)
+      hl.DiagnosticVirtualTextError = { bg = c.none, fg = c.error }
+      hl.DiagnosticVirtualTextWarn = { bg = c.none, fg = c.warning }
+      hl.DiagnosticVirtualTextInfo = { bg = c.none, fg = c.info }
+      hl.DiagnosticVirtualTextHint = { bg = c.none, fg = c.hint }
+      hl.DiagnosticVirtualTextUnnecessary = { bg = c.none, fg = c.terminal_black }
+
+      hl.TreesitterContext = { bg = c.none }
+    end
   }
 end
 

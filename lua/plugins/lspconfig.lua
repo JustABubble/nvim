@@ -39,7 +39,7 @@ local config = function()
   end
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  -- capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+  capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
   local lspconfig = require('lspconfig')
   for _, server in ipairs(require('util').lsp_servers) do
@@ -48,16 +48,6 @@ local config = function()
       capabilities = capabilities,
     })
   end
-
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = false,
-      signs = false,
-      update_in_insert = false,
-      underline = false,
-      severity_sort = false,
-    }
-  )
 
   local border = {
     { '🭽', 'FloatBorder' },

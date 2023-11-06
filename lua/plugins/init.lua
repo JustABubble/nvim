@@ -19,13 +19,6 @@ return {
     ft = 'rust',
   },
   {
-    'togglebyte/togglerust',
-    ft = 'rust',
-    keys = {
-      { '<C-b>', '<CMD>Compile<CR>', desc = 'Compile some rust code.' }
-    },
-  },
-  {
     'github/copilot.vim',
     cond = vim.fn.executable('node') == 1,
     event = 'BufReadPre',
