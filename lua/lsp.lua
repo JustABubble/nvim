@@ -25,34 +25,50 @@ end
 
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(event)
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+    client.server_capabilities.semanticTokensProvider = nil
+
     local nmap = function(lhs, rhs)
       return vim.keymap.set("n", lhs, rhs, { buffer = event.buf })
     end
+
+    vim.bo[event.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
     nmap("<leader>rn", vim.lsp.buf.rename)
     nmap("<leader>ca", vim.lsp.buf.code_action)
 
     nmap("gd", vim.lsp.buf.definition)
     nmap("gr", require("telescope.builtin").lsp_references)
-    nmap('gI', require('telescope.builtin').lsp_implementations)
-    nmap('<leader>D', vim.lsp.buf.type_definition)
-    nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols)
-    nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols)
+    nmap("gI", require("telescope.builtin").lsp_implementations)
+    nmap("<leader>D", vim.lsp.buf.type_definition)
+    nmap("<leader>ds", require("telescope.builtin").lsp_document_symbols)
+    nmap("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols)
 
     -- See `:help K` for why this keymap
-    nmap('K', vim.lsp.buf.hover)
-    nmap('<C-k>', vim.lsp.buf.signature_help)
+    nmap("K", vim.lsp.buf.hover)
+    nmap("<C-k>", vim.lsp.buf.signature_help)
 
     -- Lesser used LSP functionality
-    nmap('gD', vim.lsp.buf.declaration)
-    nmap('<leader>wa', vim.lsp.buf.add_workspace_folder)
-    nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder)
-    nmap('<leader>wl', function()
+    nmap("gD", vim.lsp.buf.declaration)
+    nmap("<leader>wa", vim.lsp.buf.add_workspace_folder)
+    nmap("<leader>wr", vim.lsp.buf.remove_workspace_folder)
+    nmap("<leader>wl", function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end)
 
-    nmap('<leader>f', function() vim.lsp.buf.format({ async = true }) end)
+    nmap("<leader>f", function() vim.lsp.buf.format({ async = true }) end)
+
+    vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+      vim.lsp.diagnostic.on_publish_diagnostics, {
+          virtual_text = false,
+          signs = false,
+          update_in_insert = false,
+          underline = false,
+          severity_sort = false,
+      }
+    )
   end
 })
+
 
 return M
