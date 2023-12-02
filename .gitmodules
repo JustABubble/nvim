@@ -1,6 +1,3 @@
-[submodule "pack/plugins/start/gruvbox.nvim"]
-	path = pack/plugins/start/gruvbox.nvim
-	url = https://github.com/ellisonleao/gruvbox.nvim.git
 [submodule "pack/plugins/start/vim-commentary"]
 	path = pack/plugins/start/vim-commentary
 	url = https://github.com/tpope/vim-commentary.git
@@ -28,3 +25,6 @@
 [submodule "pack/plugins/start/vim-polyglot"]
 	path = pack/plugins/start/vim-polyglot
 	url = https://github.com/sheerun/vim-polyglot.git
+[submodule "pack/plugins/start/simple-dark"]
+	path = pack/plugins/start/simple-dark
+	url = https://github.com/tek256/simple-dark.git
