@@ -8,7 +8,7 @@ vim.keymap.set('n', '<C-d>', '<C-d>zz', { silent = true })
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { silent = true })
 
 -- File browsing
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+-- vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })

@@ -28,3 +28,6 @@
 [submodule "pack/plugins/start/simple-dark"]
 	path = pack/plugins/start/simple-dark
 	url = https://github.com/tek256/simple-dark.git
+[submodule "pack/plugins/start/oil.nvim"]
+	path = pack/plugins/start/oil.nvim
+	url = https://github.com/stevearc/oil.nvim.git
