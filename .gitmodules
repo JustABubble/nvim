@@ -37,3 +37,9 @@
 [submodule "pack/plugins/start/nvim-treesitter-textobjects"]
 	path = pack/plugins/start/nvim-treesitter-textobjects
 	url = https://github.com/nvim-treesitter/nvim-treesitter-textobjects.git
+[submodule "pack/plugins/start/nvim-dap.git"]
+	path = pack/plugins/start/nvim-dap.git
+	url = https://github.com/mfussenegger/nvim-dap.git
+[submodule "pack/plugins/start/nvim-dap-ui"]
+	path = pack/plugins/start/nvim-dap-ui
+	url = https://github.com/rcarriga/nvim-dap-ui.git
