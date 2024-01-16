@@ -43,3 +43,6 @@
 [submodule "pack/plugins/start/nvim-dap-ui"]
 	path = pack/plugins/start/nvim-dap-ui
 	url = https://github.com/rcarriga/nvim-dap-ui.git
+[submodule "pack/plugins/start/tokyonight.nvim"]
+	path = pack/plugins/start/tokyonight.nvim
+	url = https://github.com/folke/tokyonight.nvim.git
