@@ -255,6 +255,12 @@ require('lazy').setup({
     "rust-lang/rust.vim",
     ft = "rust",
   },
+
+  -- Cody by Sourcegraph
+  {
+    "sourcegraph/sg.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
 }, {})
 
 -- [[ Setting options ]]
@@ -623,6 +629,11 @@ mason_lspconfig.setup_handlers {
       filetypes = (servers[server_name] or {}).filetypes,
     }
   end,
+}
+
+-- Setup Cody
+require("sg").setup {
+  on_attach = on_attach,
 }
 
 -- [[ Configure nvim-cmp ]]
