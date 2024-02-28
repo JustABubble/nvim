@@ -256,6 +256,13 @@ require('lazy').setup({
     ft = "rust",
   },
 
+  {
+    "chomosuke/typst-preview.nvim",
+    ft = "typst",
+    version = "0.1.*",
+    build = function() require("typst-preview").update() end
+  },
+
   -- Cody by Sourcegraph
   {
     "sourcegraph/sg.nvim",
