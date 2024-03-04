@@ -56,6 +56,11 @@ vim.opt.splitbelow = true
 -- Enable colorcolumn
 vim.wo.colorcolumn = '80'
 
+-- Clean up Netrw
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -77,6 +82,8 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+vim.keymap.set('n', '<leader>o', '<CMD>setlocal spell! spelllang=en_au<CR>', { desc = 'Spell-check' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -545,12 +552,13 @@ require('lazy').setup({
       --    you can use this plugin to help you. It even has snippets
       --    for various frameworks/libraries/etc. but you will have to
       --    set up the ones that are useful for you.
-      -- 'rafamadriz/friendly-snippets',
+      'rafamadriz/friendly-snippets',
     },
     config = function()
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
+      require('luasnip.loaders.from_vscode').lazy_load()
       luasnip.config.setup {}
 
       cmp.setup {
@@ -772,6 +780,48 @@ require('lazy').setup({
         },
       }
     end,
+  },
+
+  {
+    'folke/zen-mode.nvim',
+    opts = {
+      window = {
+        width = 80,
+        options = {
+          signcolumn = 'no', -- disable signcolumn
+          number = false, -- disable number column
+          relativenumber = false, -- disable relative numbers
+          cursorline = false, -- disable cursorline
+          cursorcolumn = false, -- disable cursor column
+          foldcolumn = '0', -- disable fold column
+          list = false, -- disable whitespace characters
+        },
+      },
+      plugins = {
+        tmux = { enabled = true },
+      },
+    },
+    keys = {
+      { '<leader>f', '<CMD>ZenMode<CR>', desc = 'Zen Mode' },
+    },
+  },
+
+  {
+    'vimwiki/vimwiki',
+    ft = { '.Rmd', '.rmd', '.md', '.markdown', '.mdown' },
+    init = function()
+      vim.g.vimwiki_ext2syntax = {
+        ['.Rmd'] = 'markdown',
+        ['.rmd'] = 'markdown',
+        ['.md'] = 'markdown',
+        ['.markdown'] = 'markdown',
+        ['.mdown'] = 'markdown',
+      }
+      vim.g.vimwiki_list = { { path = vim.fn.stdpath 'data' .. '/vimwiki', syntax = 'markdown', ext = '.md' } }
+    end,
+    keys = {
+      { '<leader>v', '<CMD>VimwikiIndex<CR>', desc = 'Vimwiki' },
+    },
   },
 
   -- Language specific plugins
