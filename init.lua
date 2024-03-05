@@ -807,20 +807,43 @@ require('lazy').setup({
   },
 
   {
-    'vimwiki/vimwiki',
-    ft = { '.Rmd', '.rmd', '.md', '.markdown', '.mdown' },
-    init = function()
-      vim.g.vimwiki_ext2syntax = {
-        ['.Rmd'] = 'markdown',
-        ['.rmd'] = 'markdown',
-        ['.md'] = 'markdown',
-        ['.markdown'] = 'markdown',
-        ['.mdown'] = 'markdown',
-      }
-      vim.g.vimwiki_list = { { path = vim.fn.stdpath 'data' .. '/vimwiki', syntax = 'markdown', ext = '.md' } }
-    end,
+    'serenevoid/kiwi.nvim',
+    lazy = true,
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    opts = {
+      {
+        name = 'study',
+        path = vim.fn.stdpath 'data' .. '/kiwi/study',
+      },
+      {
+        name = 'personal',
+        path = vim.fn.stdpath 'data' .. '/kiwi/personal',
+      },
+    },
     keys = {
-      { '<leader>v', '<CMD>VimwikiIndex<CR>', desc = 'Vimwiki' },
+      {
+        '<leader>ww',
+        function()
+          require('kiwi').open_wiki_index()
+        end,
+        desc = 'Open Wiki index',
+      },
+      {
+        '<leader>wp',
+        function()
+          require('kiwi').open_wiki_index 'personal'
+        end,
+        desc = 'Open index of personal wiki',
+      },
+      {
+        'T',
+        function()
+          require('kiwi').todo.toggle()
+        end,
+        desc = 'Toggle Markdown Task',
+      },
     },
   },
 
@@ -828,6 +851,15 @@ require('lazy').setup({
   {
     'rust-lang/rust.vim',
     ft = 'rust',
+  },
+
+  {
+    'jalvesaq/Nvim-R',
+    ft = { 'r', 'rnoweb', 'rhelp', 'rrst', 'rmd', 'quarto' },
+    keys = {
+      { '<leader>sd', '<Plug>RDSendLine', desc = 'Send the current line to the console.' },
+      { '<leader>sd', '<Plug>RDSendSelection', mode = 'v', desc = 'Send the current selection to the console.' },
+    },
   },
 
   {
