@@ -852,20 +852,10 @@ require('lazy').setup({
   },
 
   {
-    'sourcegraph/sg.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-telescope/telescope.nvim',
-    },
-  },
-
-  {
     'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
     event = 'InsertEnter',
-    opts = {
-      copilot_node_command = vim.fn.expand '$HOME' .. '/.local/share/nvm/versions/node/v21.6.2/bin/node',
-    },
+    opts = {},
   },
 
   -- Language specific plugins
@@ -883,12 +873,8 @@ require('lazy').setup({
   },
 
   {
-    'chomosuke/typst-preview.nvim',
-    ft = 'typst',
-    version = '0.1.*',
-    build = function()
-      require('typst-preview').update()
-    end,
+    'lervag/vimtex',
+    ft = 'tex',
   },
 }, {})
 
