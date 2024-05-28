@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
@@ -813,12 +815,12 @@ require('lazy').setup({
     },
     opts = {
       {
-        name = 'study',
-        path = vim.fn.stdpath 'data' .. '/kiwi/study',
-      },
-      {
         name = 'personal',
         path = vim.fn.stdpath 'data' .. '/kiwi/personal',
+      },
+      {
+        name = 'study',
+        path = vim.fn.stdpath 'data' .. '/kiwi/study',
       },
     },
     keys = {
