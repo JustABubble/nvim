@@ -63,6 +63,11 @@ vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
 
+-- Folding
+vim.o.foldmethod = 'expr' -- use treesitter for folding
+vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
+vim.o.foldlevel = 99 -- Open folds by default
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -613,6 +618,7 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
+          { name = 'neorg' },
         },
       }
     end,
@@ -872,6 +878,41 @@ require('lazy').setup({
   {
     'lervag/vimtex',
     ft = 'tex',
+  },
+
+  {
+    'vhyrro/luarocks.nvim',
+    priority = 1000,
+    config = true,
+  },
+
+  {
+    'nvim-neorg/neorg',
+    dependencies = { 'luarocks.nvim' },
+    ft = 'norg',
+    cmd = 'Neorg',
+    version = '*', -- Pin Neorg to the latest stable release
+    opts = {
+      load = {
+        ['core.defaults'] = {},
+        ['core.concealer'] = {},
+        ['core.dirman'] = {
+          config = {
+            workspaces = {
+              notes = '~/Documents/Notes', -- Format: <name_of_workspace> = <path_to_workspace_root>
+            },
+            default_workspace = 'notes',
+            index = 'index.norg', -- The name of the main (root) .norg file
+          },
+        },
+        ['core.completion'] = {
+          config = {
+            engine = 'nvim-cmp',
+          },
+        },
+        ['core.integrations.nvim-cmp'] = {},
+      },
+    },
   },
 }, {})
 
